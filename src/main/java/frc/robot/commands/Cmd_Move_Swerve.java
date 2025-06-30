@@ -4,28 +4,74 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Swerve;
+import frc.robot.subsystems.Sub_Swerve;
+import java.util.function.Supplier;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Cmd_Move_Swerve extends Command {
-  /** Creates a new Cmd_Move_Swerve. */
-  public Cmd_Move_Swerve() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  private final Sub_Swerve sub_Swerve;
+  private final Supplier<Double>  Xaxis,Yaxis,giros;
+  private final Supplier<Boolean>fieldoriented,slow;
+  public Cmd_Move_Swerve(Sub_Swerve Sub_Swerve,Supplier<Double> Xaxis,Supplier<Double> Yaxis,Supplier<Double> giros,Supplier<Boolean> fieldoriented,Supplier<Boolean> slow) {
+    this.sub_Swerve=Sub_Swerve;
+    this.Xaxis=Xaxis;
+    this.Yaxis=Yaxis;
+    this.giros=giros;
+    this.fieldoriented=fieldoriented;
+    this.slow=slow;
+    addRequirements(Sub_Swerve);
   }
 
-  // Called when the command is initially scheduled.
+ 
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
+  public void initialize() {
+    sub_Swerve.zeroHeading();
+  }
+  ChassisSpeeds chassisSpeeds;
   @Override
-  public void execute() {}
+  public void execute() {
+    double velocidadx=Xaxis.get()*-1;
+    double velocidady=(Yaxis.get())*-1;
+    double velocidad_giros=giros.get()*-1;
+    double fium;
+    if(Math.abs(velocidadx)>.3){
+    }else{
+      if (Math.abs(velocidadx)>0.6){
+      }
+    }
 
-  // Called once the command ends or is interrupted.
+    if (Math.abs(Xaxis.get())<0.05){velocidadx=0;}
+    if (Math.abs(Yaxis.get())<0.05){velocidady=0;}
+    if (Math.abs(giros.get())<0.05){velocidad_giros=0;}
+
+    if (slow.get()){
+      fium=.3;
+    }
+    else{
+      fium=.6;
+    }
+
+    if (fieldoriented.get()){
+      
+      chassisSpeeds= new ChassisSpeeds(velocidady*fium,velocidadx*fium, velocidad_giros*fium); 
+    }
+    else{
+      chassisSpeeds= ChassisSpeeds.fromFieldRelativeSpeeds(velocidady*fium, velocidadx*fium, velocidad_giros*fium, sub_Swerve.get2Drotation());
+    }
+    //Manda un arreglo de estados de modulos que pasan por un objeto de Swerve drive kinematics para poder generar las velocidades
+    SwerveModuleState[] moduleStates=Swerve.swervekinematics.toSwerveModuleStates(chassisSpeeds);
+    sub_Swerve.setModuleStates(moduleStates);
+  } 
+
+
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    sub_Swerve.stopModules();
+  }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

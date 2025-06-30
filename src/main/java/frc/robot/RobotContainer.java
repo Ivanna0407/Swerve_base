@@ -4,10 +4,11 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Cmd_Move_Swerve;
+import frc.robot.commands.Cmd_giro;
+import frc.robot.subsystems.Sub_Swerve;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,18 +18,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final Sub_Swerve Swerve= new Sub_Swerve();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final CommandXboxController joydrive = new CommandXboxController(0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    Swerve.setDefaultCommand(new Cmd_Move_Swerve(Swerve, () -> joydrive.getLeftX(), () -> joydrive.getLeftY(), ()-> joydrive.getRightX(),() -> joydrive.rightBumper().getAsBoolean(),() -> joydrive.y().getAsBoolean()));
     configureBindings();
   }
 
 
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    joydrive.a().whileTrue(new Cmd_giro(Swerve, 3.14));
+    joydrive.b().whileTrue(new Cmd_giro(Swerve, .5));
     
   }
 

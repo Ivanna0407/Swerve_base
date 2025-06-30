@@ -5,15 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Sub_Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Cmd_resetheading extends Command {
-  /** Creates a new Cmd_resetheading. */
-  private final Sub_Swerve sub_Swerve;
-  public Cmd_resetheading(Sub_Swerve sub_Swerve) {
+public class Cmd_PID_FRC extends Command {
+  /** Creates a new Cmd_PID_FRC. */
+  public Cmd_PID_FRC() {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.sub_Swerve=sub_Swerve;
   }
 
   // Called when the command is initially scheduled.
@@ -22,9 +19,7 @@ public class Cmd_resetheading extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    sub_Swerve.zeroHeading();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

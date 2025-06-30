@@ -31,7 +31,6 @@ public class Sub_Swerve extends SubsystemBase {
   private final Sub_Modulo Modulo_2 = new Sub_Modulo(1, 2, true, true, 9,  false);
   private final Sub_Modulo Modulo_3 = new Sub_Modulo(5, 6, true, true, 11,  false);
   private final Sub_Modulo Modulo_4 = new Sub_Modulo(7, 8, true, true, 12 , false);
-  //private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
   private final Pigeon2 Pigeon = new Pigeon2(13);
   //private final SwerveDriveOdometry odometry= new SwerveDriveOdometry(Swerve.swervekinematics,gyro.getRotation2d(), getModulePositions());
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(Swerve.swervekinematics, Pigeon.getRotation2d(), getModulePositions());
@@ -84,22 +83,13 @@ public class Sub_Swerve extends SubsystemBase {
     // This method will be called once per scheduler run
     field.setRobotPose(getPose()); 
     SmartDashboard.putNumber("Yaw", Head());
-    //odometry.update(get2Drotation(), getModulePositions());
+    SmartDashboard.putNumber("Radianes", getYawRadians());
+    odometry.update(get2Drotation(), getModulePositions());
   }
-/* 
-  public void zeroHeading(){
-    gyro.reset();
-  }
-    */
 
   public void zeroHeading(){
     Pigeon.reset();
   }
-/* 
-  public double getYawrad(){
-    return gyro.getYaw()*(Math.PI/180);
-  }
-    */
 
   public double getYawRadians(){
     return Pigeon.getYaw().getValueAsDouble()*(Math.PI/180);
